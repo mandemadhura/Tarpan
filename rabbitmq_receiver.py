@@ -14,7 +14,7 @@ def callback(channel, method, properties, body):
     """Callback method for basic consume of RabbitMQ"""
 
     received_data = json.loads(body)
-    print(f"{received_data['sender']}: {received_data['message']}")
+    print(f"{received_data['sender']}: {received_data['msg']}")
 
 
 if len(sys.argv) == 2:

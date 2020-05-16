@@ -4,13 +4,11 @@ Sender Module
 
 
 import json
+import sys
 from abc import ABCMeta, abstractmethod
 
 import pika
 
-msg = {"sender": "Madhura",
-       "message": "I love Malhar A lottttt"
-      }
 
 class Sender(metaclass=ABCMeta):
     """Base class for all sender classes"""
@@ -27,7 +25,7 @@ class Sender(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def send(self, message):
+    def send(self, msg):
         '''Sends a message'''
         raise NotImplementedError
 
@@ -54,7 +52,7 @@ class RabbitMQSender(Sender):
         '''Establishes a new connection to RabbitMQ Server'''
         try:
             self._connection = pika.BlockingConnection(
-                pika.ConnectionParameters(self._host))
+                pika.ConnectionParameters(self._host, self._port))
             self._channel = self._connection.channel()
             self._channel.exchange_declare(exchange=self._exchange_name,
                                            exchange_type=self.EXCHANGE_TYPE,
@@ -62,23 +60,41 @@ class RabbitMQSender(Sender):
         except Exception as err:
             print(f'Error: {err}')
 
-    def send(self, message):
+    def send(self, msg):
         '''Sends a message to RabbitMQ Exchange'''
         try:
             self._channel.basic_publish(exchange=self._exchange_name,
                                         routing_key=self.ROUTING_KEY,
                                         properties=self._msg_props,
-                                        body=message)
+                                        body=msg)
         except Exception as err:
             print(f'Error: {err}')
 
 
 if __name__ == '__main__':
-    sender = RabbitMQSender(exchange_name='tarpan', _host='localhost')
-    sender.connect()
-    sender.send(json.dumps(msg))
+    EXIT_CMD = 'q!'
 
-# TODO: Take message from User
+    sender = RabbitMQSender(exchange_name='tarpan', _host='localhost',
+                            port='5672')
+    sender.connect()
+
+    INPUT_MSG = ''
+    message = {}
+    sender_name = input('Enter Sender Name: ').strip()
+    if len(sender_name) == 0:
+        print("Sender Name can not be blank")
+        sys.exit(1)
+    while True:
+        INPUT_MSG = input('Enter message to send. Press q! to quit. \n')
+        if INPUT_MSG == EXIT_CMD:
+            break
+        if len(INPUT_MSG.strip()) > 0:
+            message['sender'] = sender_name
+            message['msg'] = INPUT_MSG
+            print(message)
+            sender.send(json.dumps(message))
+    print("Exiting...")
+
 # - Add RabbitMQ Port
 # - Add Signal Catching Mechanism
 # - Use of DEFAULT_HOST as a argument in __init__()

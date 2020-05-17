@@ -1,0 +1,28 @@
+#!/bin/env python
+
+'''Module contains authentication server'''
+
+
+from http import HTTPStatus
+
+from flask import Flask, request
+
+app = Flask(__name__)
+
+USERS = {'mandi': 'mandi123', 'nath': 'vbmade', 'tanmay': 'tanmay123'}
+
+
+@app.route('/api/v1/user/<username>/authenticate', methods=['POST'])
+def authenticate(username):
+    '''Authenticates a User'''
+    http_status_code = HTTPStatus.NOT_FOUND
+    password = request.json.get('password')
+    user_passwd = USERS.get(username)
+    if user_passwd:
+        if user_passwd == password:
+            http_status_code = HTTPStatus.OK
+    return '', http_status_code
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port='6443')

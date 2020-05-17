@@ -3,11 +3,13 @@ Sender Module
 """
 
 
+import getpass
 import json
 import sys
 from abc import ABCMeta, abstractmethod
 
 import pika
+import requests
 
 
 class Sender(metaclass=ABCMeta):
@@ -71,8 +73,27 @@ class RabbitMQSender(Sender):
             print(f'Error: {err}')
 
 
+def authenticate(username, pwd):
+    '''Authenticates User'''
+    url = 'http://localhost:6443/api/v1/user'
+    response = requests.post(f'{url}/{username}/authenticate',
+                             json={"password": f"{pwd}"})
+    return response.status_code == 200
+
+
 if __name__ == '__main__':
     EXIT_CMD = 'q!'
+
+    user_name = input('Enter User Name: ').strip()
+    if len(user_name) == 0:
+        print("User Name can not be blank")
+        sys.exit(1)
+
+    password = getpass.getpass()
+    authenticated = authenticate(user_name, password)
+    if not authenticated:
+        print('Invalid Username or password')
+        sys.exit(1)
 
     sender = RabbitMQSender(exchange_name='tarpan', _host='localhost',
                             port='5672')
@@ -80,16 +101,12 @@ if __name__ == '__main__':
 
     INPUT_MSG = ''
     message = {}
-    sender_name = input('Enter Sender Name: ').strip()
-    if len(sender_name) == 0:
-        print("Sender Name can not be blank")
-        sys.exit(1)
     while True:
         INPUT_MSG = input('Enter message to send. Press q! to quit. \n')
         if INPUT_MSG == EXIT_CMD:
             break
         if len(INPUT_MSG.strip()) > 0:
-            message['sender'] = sender_name
+            message['sender'] = user_name
             message['msg'] = INPUT_MSG
             print(message)
             sender.send(json.dumps(message))

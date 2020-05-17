@@ -8,7 +8,6 @@ from abc import ABCMeta, abstractmethod
 
 import pika
 
-QUEUE_NAME = "hello"
 
 class Receiver(metaclass=ABCMeta):
     '''Abstract Base class for all receiver classes'''

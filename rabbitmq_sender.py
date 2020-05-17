@@ -11,12 +11,12 @@ import pika
 
 
 class Sender(metaclass=ABCMeta):
-    """Base class for all sender classes"""
+    '''Base class for all sender classes'''
 
     DEFAULT_HOST = 'localhost'
 
     def __init__(self, **kwargs):
-        """Init Method"""
+        '''Init Method'''
         self._host = kwargs.get('host')
 
     @abstractmethod
@@ -31,7 +31,7 @@ class Sender(metaclass=ABCMeta):
 
 
 class RabbitMQSender(Sender):
-    """Sends message using RabbitMQ"""
+    '''Sends message using RabbitMQ'''
 
     EXCHANGE_TYPE = 'fanout'
     ROUTING_KEY = ''
@@ -39,7 +39,7 @@ class RabbitMQSender(Sender):
 
     def __init__(self, exchange_name, _host='localhost',
                  port=None):
-        """Init Method"""
+        '''Init Method'''
         super().__init__(host=_host)
         self._port = port
         self._exchange_name = exchange_name
@@ -95,6 +95,5 @@ if __name__ == '__main__':
             sender.send(json.dumps(message))
     print("Exiting...")
 
-# - Add RabbitMQ Port
 # - Add Signal Catching Mechanism
 # - Use of DEFAULT_HOST as a argument in __init__()

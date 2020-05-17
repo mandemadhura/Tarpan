@@ -86,7 +86,7 @@ class RabbitMQReceiver(Receiver):
         print(f"{received_data['sender']}: {received_data['msg']}")
 
 def usage():
-    '''Prints the usage '''
+    '''Prints the usage'''
 
     print('usage: rabbitmq_receiver.py queue_name \n \
           queue_name: Name of the queue')

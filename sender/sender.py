@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Sender Module
 """
@@ -61,6 +63,7 @@ class RabbitMQSender(Sender):
                                            durable=True)
         except Exception as err:
             print(f'Error: {err}')
+            sys.exit(1)
 
     def send(self, msg):
         '''Sends a message to RabbitMQ Exchange'''
@@ -71,6 +74,7 @@ class RabbitMQSender(Sender):
                                         body=msg)
         except Exception as err:
             print(f'Error: {err}')
+            sys.exit(1)
 
 
 def authenticate(username, pwd):
@@ -114,3 +118,4 @@ if __name__ == '__main__':
 
 # - Add Signal Catching Mechanism
 # - Use of DEFAULT_HOST as a argument in __init__()
+# - If Connection Fails, retry machanism to connect to RabbitMQ

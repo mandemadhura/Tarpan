@@ -16,18 +16,6 @@ Requires: rabbitmq-server
 %description
 Installs Tarpan with sender and receiver
 
-%clean
-sym_link_sender="/usr/local/bin/sender"
-sym_link_receiver="/usr/local/bin/receiver"
-
-# Removes the symbolic link
-[ -L ${sym_link_sender} ] && rm ${sym_link_sender}
-[ -L ${sym_link_receiver} ] && rm ${sym_link_receiver}
-
-# Reset the RabbitMQ Configuration
-rabbitmqctl stop_app
-rabbitmqctl reset
-
 %prep
 %setup -n Tarpan
 
@@ -54,6 +42,19 @@ ln -s /opt/Tarpan/receiver/receiver.py ${BIN_INSTALL_PATH}/receiver
 
 # Start the RabbitMQ server service
 systemctl start rabbitmq-server
+rabbitmqctl start_app
+
+%postun
+sym_link_sender="/usr/local/bin/sender"
+sym_link_receiver="/usr/local/bin/receiver"
+
+# Removes the symbolic link
+[ -L ${sym_link_sender} ] && rm ${sym_link_sender}
+[ -L ${sym_link_receiver} ] && rm ${sym_link_receiver}
+
+# Reset the RabbitMQ Configuration
+rabbitmqctl stop_app
+rabbitmqctl reset
 
 %files
 /opt/Tarpan/__init__.py

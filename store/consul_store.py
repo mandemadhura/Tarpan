@@ -7,8 +7,7 @@ data from consul store
 """
 
 
-from store import Store
-
+from store.store import Store
 
 class ConsulStore(Store):
     """
@@ -44,3 +43,4 @@ class ConsulStore(Store):
            specific to a user
         """
         pass
+

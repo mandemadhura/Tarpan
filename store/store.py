@@ -5,6 +5,7 @@
 Module for all the store implementation
 """
 
+
 class Store:
     """
        Base interface which provides functionality to add,
@@ -42,3 +43,4 @@ class Store:
            username in the store
         """
         raise NotImplementedError
+

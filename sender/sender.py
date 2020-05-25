@@ -84,6 +84,12 @@ def authenticate(username, pwd):
                              json={"password": f"{pwd}"})
     return response.status_code == 200
 
+def add_user(username, pwd):
+    '''Registers user's information to the store'''
+    url = 'http://localhost:6443/api/v1/user/users'
+    response = requests.post(f'{url}/{username}/add_user',
+                             json={"password": f"{pwd}"})
+    return response.status_code == 200
 
 if __name__ == '__main__':
     EXIT_CMD = 'q!'
@@ -92,7 +98,6 @@ if __name__ == '__main__':
     if len(user_name) == 0:
         print("User Name can not be blank")
         sys.exit(1)
-
     password = getpass.getpass()
     authenticated = authenticate(user_name, password)
     if not authenticated:

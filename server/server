@@ -7,6 +7,8 @@ from http import HTTPStatus
 
 from flask import Flask, request
 
+from utility.user_manager import UserManager
+
 app = Flask(__name__)
 
 USERS = {'mandi': 'mandi123', 'nath': 'vbmade', 'tanmay': 'tanmay123'}
@@ -23,6 +25,15 @@ def authenticate(username):
             http_status_code = HTTPStatus.OK
     return '', http_status_code
 
+@app.route('/api/v1/user/users/<username>/add_user', methods=['POST'])
+def add_user(username):
+    '''Authenticates a User'''
+    http_status_code = HTTPStatus.NOT_FOUND
+    password = request.json.get('password')
+    user_manager = UserManager('ConsulStore')
+    user_manager.create_user(username, password)
+    http_status_code = HTTPStatus.OK
+    return '', http_status_code
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='6443')

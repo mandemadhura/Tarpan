@@ -11,8 +11,6 @@ from utility.user_manager import UserManager
 
 app = Flask(__name__)
 
-USERS = {'mandi': 'mandi123', 'nath': 'vbmade', 'tanmay': 'tanmay123'}
-
 
 @app.route('/api/v1/user/<username>/authenticate', methods=['POST'])
 def authenticate(username):

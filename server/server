@@ -19,9 +19,11 @@ def authenticate(username):
     '''Authenticates a User'''
     http_status_code = HTTPStatus.NOT_FOUND
     password = request.json.get('password')
-    user_passwd = USERS.get(username)
-    if user_passwd:
-        if user_passwd == password:
+    user_manager = UserManager('ConsulStore')
+    stored_password = user_manager.get_password(username)
+
+    if stored_password:
+        if stored_password == password:
             http_status_code = HTTPStatus.OK
     return '', http_status_code
 
@@ -32,8 +34,18 @@ def add_user(username):
     password = request.json.get('password')
     user_manager = UserManager('ConsulStore')
     user_manager.create_user(username, password)
-    http_status_code = HTTPStatus.OK
+    http_status_code = HTTPStatus.CREATED
+    return '', http_status_code
+
+@app.route('/api/v1/user/check_user', methods=['POST'])
+def check_existance_of_user():
+    '''Checks whether username exists in the store or not'''
+    http_status_code = HTTPStatus.NOT_FOUND
+    username = request.json.get('username')
+    user_manager = UserManager('ConsulStore')
+    if user_manager.check_existance_of_user(username):
+        http_status_code = HTTPStatus.OK
     return '', http_status_code
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='6443')
+    app.run(host='0.0.0.0', port='6443', debug=True)

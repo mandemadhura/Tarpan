@@ -12,6 +12,7 @@ MarkupSafe==1.1.1
 mccabe==0.6.1
 pika==1.1.0
 pylint==2.5.2
+python-consul==1.1.0
 requests==2.23.0
 six==1.14.0
 toml==0.10.1

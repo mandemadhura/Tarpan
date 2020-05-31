@@ -28,7 +28,17 @@ class UserManager:
         """
         self._store_implementer.put(user_name, user_password)
 
-    def authenticate_user(self, user_name, user_password):
+    def check_existance_of_user(self, user_name):
+        '''
+            Checks whether User with username Exists in the store
+            or not
+        '''
+        return self._store_implementer.check_if_key_exists(user_name)
+
+    def get_password(self, user_name):
         """
            Authenticates the user with the information from store
         """
+        password = None
+        password = self._store_implementer.get(user_name)
+        return password
